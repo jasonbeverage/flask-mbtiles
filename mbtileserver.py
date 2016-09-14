@@ -43,9 +43,9 @@ def teardown_request(exception):
         g.db.close()
 
 
-@frontend.route("/<int:zoom>/<int:column>/<int:row>.png")
+@frontend.route("/<int:zoom>/<int:column>/<int:row>.<ext>")
 @cache.cached(timeout=300)
-def query_tile(zoom, column, row):
+def query_tile(zoom, column, row, ext):
     """Get a tile from the MBTiles database """
     query = 'SELECT tile_data FROM tiles '\
             'WHERE zoom_level = ? AND tile_column = ? AND tile_row = ?;'
@@ -54,9 +54,16 @@ def query_tile(zoom, column, row):
     if not results:
         abort(404)
     the_image = results[0][0]
+
+    mimeType = "image/png"
+    if ext == "jpg":
+        mimeType = 'image/jpeg'
+    elif ext == "pbf":
+        mimeType = "application/x-protobuf"
+
     return current_app.response_class(
         StringIO(the_image).read(),
-        mimetype='image/png'
+        mimetype=mimeType
     )
 
 
