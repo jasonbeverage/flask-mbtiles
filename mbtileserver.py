@@ -89,4 +89,4 @@ if __name__ == "__main__":
             'CACHE_TYPE': 'simple',
         }
     )
-    app.run(debug=True, port=os.environ.get('MBTILES_PORT', 41815))
+    app.run(debug=True, port=int(os.environ.get('MBTILES_PORT', 41815)))
